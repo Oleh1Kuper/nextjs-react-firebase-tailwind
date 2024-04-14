@@ -12,8 +12,10 @@
     "eslint-config-airbnb": "^19.0.4",
     "firebase": "^10.11.0",
     "next": "14.2.1",
+    "random-avatar-generator": "^2.0.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-hook-form": "^7.51.3"
   },
   "devDependencies": {
     "@types/node": "^20",
