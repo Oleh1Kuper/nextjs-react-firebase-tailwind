@@ -39,7 +39,7 @@ const Home = () => {
       </div>
 
       <div className="w-3/12 flex-grow">
-        <ChatRoom user={user} selectedChatroom={selectedChatroom} />
+        <ChatRoom selectedChatroom={selectedChatroom} />
       </div>
     </div>
   );
