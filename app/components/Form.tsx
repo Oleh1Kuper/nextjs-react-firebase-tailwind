@@ -11,6 +11,7 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import toast from 'react-hot-toast';
 import Spinner from './Spinner';
 
 type FormData = {
@@ -82,7 +83,7 @@ const Form = () => {
 
       reset();
     } catch (error) {
-      console.error(error);
+      toast.error(`${error}`);
     } finally {
       setIsLoading(false);
     }

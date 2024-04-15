@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "classnames": "^2.5.1",
+    "emoji-picker-react": "^4.9.2",
     "eslint-config-airbnb": "^19.0.4",
     "firebase": "^10.11.0",
+    "moment": "^2.30.1",
     "next": "14.2.1",
     "random-avatar-generator": "^2.0.0",
     "react": "^18",

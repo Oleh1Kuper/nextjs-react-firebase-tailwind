@@ -4,14 +4,12 @@ type Props = {
   name: string;
   avatar: string;
   latestMessage?: string;
-  time: string;
   type: 'user' | 'chat';
 };
 
 const UserCard: React.FC<Props> = ({
   avatar,
   name,
-  time,
   type,
   latestMessage,
 }) => {
@@ -34,7 +32,6 @@ const UserCard: React.FC<Props> = ({
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">{name}</h2>
-            <span className="text-xs text-gray-500">{time}</span>
           </div>
 
           <p className="truncate text-sm text-gray-500">{latestMessage}</p>

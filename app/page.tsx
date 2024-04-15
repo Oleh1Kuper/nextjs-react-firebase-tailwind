@@ -10,6 +10,9 @@ import ChatRoom from './components/ChatRoom';
 
 const Home = () => {
   const [user, setUser] = useState<DocumentData | null>(null);
+  const [selectedChatroom, setSelectedChatroom] = useState<DocumentData | null>(
+    null,
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -17,23 +20,26 @@ const Home = () => {
       if (user) {
         const useRef = doc(firestore, 'users', user.uid);
         const userSnap = await getDoc(useRef);
-        const userData = userSnap.data();
+        const userData = { id: userSnap.id, ...userSnap.data() };
 
         setUser(userData!);
+      } else {
+        setUser(null);
+        router.push('/login');
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
   return (
     <div className="flex h-screen">
-      <div className="flex-shrink-0 w-3/12">
-        <Users user={user} />
+      <div className="w-3/12 flex-shrink-0">
+        <Users setSelectedChatroom={setSelectedChatroom} userData={user} />
       </div>
 
-      <div className="flex-grow w-3/12">
-        <ChatRoom />
+      <div className="w-3/12 flex-grow">
+        <ChatRoom user={user} selectedChatroom={selectedChatroom} />
       </div>
     </div>
   );

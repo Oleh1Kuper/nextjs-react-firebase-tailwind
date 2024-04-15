@@ -51,6 +51,7 @@
         "some": [ "nesting", "id"  ]
       }
     }],
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "@next/next/no-img-element": "off"
   }
 }
