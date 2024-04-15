@@ -50,6 +50,7 @@
       "required": {
         "some": [ "nesting", "id"  ]
       }
-    }]
+    }],
+    "no-shadow": "off"
   }
 }
