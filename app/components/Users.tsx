@@ -16,6 +16,7 @@ import {
   where,
   getDocs,
   DocumentData,
+  Unsubscribe,
 } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import cn from 'classnames';
@@ -123,25 +124,26 @@ const Users: React.FC<Props> = ({ userData, setSelectedChatroom }) => {
   useEffect(() => {
     setIsLoading2(true);
 
-    if (!userData) {
-      return () => {};
+    let unsubscribe: Unsubscribe;
+
+    if (userData) {
+      const chatroomsQuery = query(
+        collection(firestore, 'chatrooms'),
+        where('users', 'array-contains', userData.id),
+      );
+
+      unsubscribe = onSnapshot(chatroomsQuery, (snapshot) => {
+        const chatrooms = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setIsLoading2(false);
+        setUserChatrooms(chatrooms);
+      });
     }
 
-    const chatroomsQuery = query(
-      collection(firestore, 'chatrooms'),
-      where('users', 'array-contains', userData.id),
-    );
-    const unsubscribe = onSnapshot(chatroomsQuery, (snapshot) => {
-      const chatrooms = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setIsLoading2(false);
-      setUserChatrooms(chatrooms);
-    });
-
-    return () => unsubscribe();
+    return () => unsubscribe && unsubscribe();
   }, [userData]);
 
   return (

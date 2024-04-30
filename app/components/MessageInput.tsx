@@ -1,7 +1,10 @@
+'use client';
+
 import React, {
   ChangeEvent,
   Dispatch,
   SetStateAction,
+  useRef,
   useState,
 } from 'react';
 import { FaPaperPlane, FaPaperclip } from 'react-icons/fa';
@@ -37,6 +40,16 @@ const MessageInput: React.FC<Props> = ({
     null,
   );
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const dialogRef = useRef<null | HTMLDialogElement>(null);
+  const fileInput = useRef(Date.now());
+
+  const handleClose = () => {
+    dialogRef.current?.close();
+  };
+
+  const handleOpen = () => {
+    dialogRef.current?.showModal();
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -56,6 +69,7 @@ const MessageInput: React.FC<Props> = ({
 
     const storageRef = ref(storage, `images/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
+    const url = await getDownloadURL(uploadTask.snapshot.ref);
 
     uploadTask.on(
       'state_changed',
@@ -68,15 +82,14 @@ const MessageInput: React.FC<Props> = ({
       (error) => {
         toast.error(`${error}`);
       },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setFile(undefined);
-          setImage(downloadURL);
-          setImagePreview(null);
-          (document.getElementById('my_modal_3') as HTMLDialogElement).close();
-        });
-      },
+      () => url,
     );
+
+    setFile(undefined);
+    setImage(url);
+    setImagePreview(null);
+    handleClose();
+    fileInput.current = Date.now();
   };
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
@@ -86,8 +99,7 @@ const MessageInput: React.FC<Props> = ({
   return (
     <div className="relative flex items-center border-t border-gray-200 p-4">
       <FaPaperclip
-        onClick={() => (document
-          .getElementById('my_modal_3') as HTMLDialogElement).showModal()}
+        onClick={handleOpen}
         className={`mr-2 cursor-pointer 
           ${image ? 'text-blue-500' : 'text-gray-500'}`}
       />
@@ -118,7 +130,7 @@ const MessageInput: React.FC<Props> = ({
         </div>
       )}
 
-      <dialog id="my_modal_3" className="modal">
+      <dialog ref={dialogRef} id="my_modal_3" className="modal">
         <div className="modal-box">
           <form method="dialog">
             {imagePreview && (
@@ -128,7 +140,13 @@ const MessageInput: React.FC<Props> = ({
                 className="mb-4 max-h-60 w-60"
               />
             )}
-            <input type="file" accept="image/*" onChange={handleFileChange} />
+
+            <input
+              key={fileInput.current}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
 
             <button
               type="button"
@@ -143,8 +161,7 @@ const MessageInput: React.FC<Props> = ({
           <button
             type="button"
             className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
-            onClick={() => (document
-              .getElementById('my_modal_3') as HTMLDialogElement).close()}
+            onClick={handleClose}
           >
             ✕
           </button>

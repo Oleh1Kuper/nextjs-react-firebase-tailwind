@@ -28,23 +28,15 @@ const UserCard: React.FC<Props> = ({
         </div>
       </div>
 
-      {type === 'chat' && (
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{name}</h2>
-          </div>
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">{name}</h2>
+        </div>
 
+        {type === 'chat' && (
           <p className="truncate text-sm text-gray-500">{latestMessage}</p>
-        </div>
-      )}
-
-      {type === 'user' && (
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{name}</h2>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

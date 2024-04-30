@@ -10,6 +10,7 @@ import {
   orderBy,
   updateDoc,
   DocumentData,
+  Unsubscribe,
 } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
 import toast from 'react-hot-toast';
@@ -38,27 +39,27 @@ const ChatRoom: React.FC<Props> = ({ selectedChatroom }) => {
   }, [messages]);
 
   useEffect(() => {
-    if (!chatRoomId) {
-      return () => {};
+    let unsubscribe: Unsubscribe;
+
+    if (chatRoomId) {
+      unsubscribe = onSnapshot(
+        query(
+          collection(firestore, 'messages'),
+          where('chatRoomId', '==', chatRoomId),
+          orderBy('time', 'asc'),
+        ),
+        (snapshot) => {
+          const messagesData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          setMessages(messagesData);
+        },
+      );
     }
 
-    const unsubscribe = onSnapshot(
-      query(
-        collection(firestore, 'messages'),
-        where('chatRoomId', '==', chatRoomId),
-        orderBy('time', 'asc'),
-      ),
-      (snapshot) => {
-        const messagesData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setMessages(messagesData);
-      },
-    );
-
-    return () => unsubscribe();
+    return () => unsubscribe && unsubscribe();
   }, [chatRoomId]);
 
   const sendMessage = async () => {

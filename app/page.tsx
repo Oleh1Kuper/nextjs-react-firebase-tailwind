@@ -22,7 +22,7 @@ const Home = () => {
         const userSnap = await getDoc(useRef);
         const userData = { id: userSnap.id, ...userSnap.data() };
 
-        setUser(userData!);
+        setUser(userData);
       } else {
         setUser(null);
         router.push('/login');
